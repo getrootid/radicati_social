@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * @file
+ * Contains radicati_social.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\Entity\NodeType;
+use \Drupal\Core\Entity\EntityInterface;
+use \Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+
+/**
+ * Implements hook_help().
+ */
+function radicati_social_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the radicati_social module.
+    case 'help.page.radicati_social':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Provides a simple social sharing block.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function radicati_social_theme() {
+  return [
+    'radicati_social' => [
+      'render element' => 'children',
+    ],
+  ];
+}
+
+/**
+ * This makes the social sharing widget available on the node display tab.
+ *
+ * @return array
+ */
+function radicati_social_entity_extra_field_info() {
+  $extra = [];
+  $description = t('Social Sharing Widget');
+
+  foreach(NodeType::loadMultiple() as $bundle) {
+    $extra['node'][$bundle->id()]['display']['social_widget'] = [
+      'label' => t('Social Sharing'),
+      'description' => $description,
+      'weight' => 0,
+      'visible' => FALSE,
+    ];
+  }
+
+  return $extra;
+}
+
+function radicati_social_node_view(array &$build, EntityInterface $entity,
+                                   EntityViewDisplayInterface $display, $view_mode) {
+  if($display->getComponent('social_widget')) {
+    $build['social_widget'] = [
+      '#theme' => 'radicati_social',
+    ];
+  }
+}
