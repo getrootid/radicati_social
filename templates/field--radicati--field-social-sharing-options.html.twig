@@ -1,0 +1,42 @@
+{{ attach_library('radicati_social/radicati-social') }}
+
+<section class='social-share' aria-label="{{ 'Social Sharing'|trans }}">
+  {% for item in items %}
+    {% set slug = item.content['#taxonomy_term'].field_slug.value %}
+    {% if slug == 'twitter' %}
+      {% include '@radicati_social/share-link.twig' with {
+        classes: 'social-link social-popup',
+        url: 'http://twitter.com/intent/tweet?url=' ~ (url('<current>')|render|url_encode),
+        slug: 'fab fa-twitter',
+        label: 'Share on Twitter -- New Window'
+      } only %}
+    {% endif %}
+
+    {% if slug == 'facebook' %}
+      {% include '@radicati_social/share-link.twig' with {
+        classes: 'social-link social-popup',
+        url: 'http://www.facebook.com/sharer.php?u=' ~ (url('<current>')|render|url_encode),
+        slug: 'fab fa-facebook-f',
+        label: 'Share on Facebook -- New Window'
+      } only %}
+    {% endif %}
+
+    {% if slug == 'linkedin' %}
+      {% include '@radicati_social/share-link.twig' with {
+        classes: 'social-link social-popup',
+        url: 'https://www.linkedin.com/sharing/share-offsite/?url=' ~ (url('<current>')|render|url_encode),
+        slug: 'fab fa-linkedin-in',
+        label: 'Share on LinkedIn -- New Window'
+      } only %}
+    {% endif %}
+
+    {% if slug == 'copy' %}
+      {% include '@radicati_social/share-link.twig' with {
+        classes: 'social-link social-copy-link',
+        url: '#',
+        slug: 'fas fa-link',
+        label: 'Copy Link to Clipboard'
+      } only %}
+    {% endif %}
+  {% endfor %}
+</section>

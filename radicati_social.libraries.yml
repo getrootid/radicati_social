@@ -1,0 +1,10 @@
+radicati-social:
+  version: 1.x
+  css:
+    theme:
+      src/styles/radicati-social.css: {}
+  js:
+    src/js/radicati-social.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once

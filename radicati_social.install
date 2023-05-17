@@ -1,0 +1,97 @@
+<?php
+
+use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\taxonomy\Entity\Term;
+
+/**
+ * Implements hook_install().
+ */
+function radicati_social_install() {
+    $vocId = "social_sharing_options";
+    $vocName = "Social Sharing Options";
+    $vocDescription = "Used for Social Sharing block";
+
+    $options = [
+        ["Copy to Clipboard", "copy"],
+        ["Facebook", "facebook"],
+        ["LinkedIn", "linkedin"],
+        ["Twitter", "twitter"],
+    ];
+
+    // Create the vocabulary if it doesn't exist
+    $vocabulary = Vocabulary::load($vocId);
+    if (!$vocabulary) {
+        $vocabulary = Vocabulary::create([
+            "vid" => $vocId,
+            "description" => $vocDescription,
+            "name" => $vocName,
+        ]);
+        $status = $vocabulary->save();
+
+        // Attach a field to the vocabulary.
+        FieldStorageConfig::create([
+            "field_name" => "field_slug",
+            "entity_type" => "taxonomy_term",
+            "type" => "string",
+            "settings" => [
+                "max_length" => 255,
+                "is_ascii" => false,
+                "case_sensitive" => false,
+            ],
+            "module" => "core",
+            "locked" => false,
+            "module" => "core",
+            "cardinality" => 1,
+        ])->save();
+
+        FieldConfig::create([
+            "field_name" => "field_slug",
+            "entity_type" => "taxonomy_term",
+            "bundle" => $vocId,
+            "label" => "Server Slug",
+            "required" => true,
+        ])->save();
+    }
+
+    foreach ($options as $option) {
+        $name = $option[0];
+        $slug = $option[1];
+        $term_exists = \Drupal::entityTypeManager()
+            ->getStorage("taxonomy_term")
+            ->loadByProperties(["name" => $name, "vid" => $vocId]);
+
+        if (!$term_exists) {
+            $term = Term::create([
+                "vid" => $vocId,
+                "name" => $name,
+                "field_slug" => $slug,
+            ]);
+            $term->save();
+        }
+    }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function radicati_social_uninstall() {
+    // Delete the configs on uninstall
+    $social_sharing_configs = [
+        "block_content.type.social_sharing",
+        "block.block.socialsharing",
+        "core.entity_form_display.taxonomy_term.social_sharing_options.default",
+        "core.entity_view_display.block_content.social_sharing.default",
+        "core.entity_view_display.taxonomy_term.social_sharing_options.slug",
+        "core.entity_view_mode.taxonomy_term.slug",
+        "field.field.block_content.social_sharing.field_social_sharing_options",
+        "field.storage.block_content.field_social_sharing_options",
+    ];
+
+    foreach ($social_sharing_configs as $config) {
+        \Drupal::configFactory()
+            ->getEditable($config)
+            ->delete();
+    }
+}

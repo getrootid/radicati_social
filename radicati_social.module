@@ -6,36 +6,80 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\node\Entity\NodeType;
-use \Drupal\Core\Entity\EntityInterface;
-use \Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 
 /**
  * Implements hook_help().
  */
 function radicati_social_help($route_name, RouteMatchInterface $route_match) {
-  switch ($route_name) {
-    // Main module help for the radicati_social module.
-    case 'help.page.radicati_social':
-      $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Provides a simple social sharing block.') . '</p>';
-      return $output;
+    switch ($route_name) {
+        // Main module help for the radicati_social module.
+        case "help.page.radicati_social":
+            $output = "";
+            $output .= "<h3>" . t("About") . "</h3>";
+            $output .=
+                "<p>" . t("Provides a simple social sharing block.") . "</p>";
+            return $output;
 
-    default:
-  }
+        default:
+    }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function radicati_social_theme_suggestions_field_alter(
+    &$suggestions,
+    $variables,
+) {
+    $name = $variables["element"]["#field_name"];
+    if ($name == "field_social_sharing_options") {
+        $sanitized_view_mode = strtr(
+            $variables["element"]["#view_mode"],
+            ".",
+            "_",
+        );
+
+        $suggestions[] = "field__radicati__" . $name;
+        $suggestions[] =
+            "field__radicati__" . $name . "__" . $sanitized_view_mode;
+    }
+
+    // $type = $entity->getType();
+    // $names = [];
+
+    // if (in_array($type, $names)) {
+    //     //$suggestions[] = 'paragraph__radicati';
+    //     $suggestions[] = "paragraph__radicati__" . $type;
+    //     $suggestions[] =
+    //         "paragraph__radicati__" . $type . "__" . $sanitized_view_mode;
+    // }
 }
 
 /**
  * Implements hook_theme().
  */
 function radicati_social_theme() {
-  return [
-    'radicati_social' => [
-      'render element' => 'children',
-    ],
-  ];
+    // The following lets Drupal know where to find the
+    // templates for the suggestions above.
+    $a = [];
+
+    $filename = "field--radicati--field-social-sharing-options";
+    $theme_name = "field__field-social-sharing-options";
+
+    $filename = str_replace("_", "-", $filename);
+    $theme_name = str_replace("-", "_", $theme_name);
+
+    $a[$theme_name] = [
+        "template" => $filename,
+        "base hook" => "field",
+        "path" =>
+            \Drupal::service("extension.list.module")->getPath(
+                "radicati_social",
+            ) . "/templates",
+    ];
+    return $a;
 }
+
 
 /**
  * This makes the social sharing widget available on the node display tab.

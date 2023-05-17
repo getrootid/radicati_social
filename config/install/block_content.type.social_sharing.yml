@@ -1,0 +1,8 @@
+uuid: 2858debd-9e2f-499e-887b-0f7ec3b7c2f5
+langcode: en
+status: true
+dependencies: {}
+id: social_sharing
+label: "Social Sharing block"
+revision: 0
+description: "A customizable social sharing block"
