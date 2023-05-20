@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.taxonomy_term.sharing_slug
     - field.field.taxonomy_term.social_sharing_options.field_sharing_slug
     - taxonomy.vocabulary.social_sharing_options
   module:
@@ -9,34 +10,18 @@ dependencies:
   enforced:
     module:
       - radicati_social
-id: taxonomy_term.social_sharing_options.default
+id: taxonomy_term.social_sharing_options.sharing_slug
 targetEntityType: taxonomy_term
 bundle: social_sharing_options
-mode: default
+mode: sharing_slug
 content:
   field_sharing_slug:
-    type: string_textfield
-    weight: 1
-    region: content
+    type: string
+    label: hidden
     settings:
-      size: 60
-      placeholder: ''
+      link_to_entity: false
     third_party_settings: {  }
-  name:
-    type: string_textfield
     weight: 0
     region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  status:
-    type: boolean_checkbox
-    weight: 2
-    region: content
-    settings:
-      display_label: true
-    third_party_settings: {  }
 hidden:
   description: true
-  path: true

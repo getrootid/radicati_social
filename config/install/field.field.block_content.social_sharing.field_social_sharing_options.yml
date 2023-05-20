@@ -1,23 +1,27 @@
-uuid: 9b407323-c7ad-4f9c-8fd0-3d6885f7d6a6
-langcode: en
+angcode: en
 status: true
 dependencies:
   config:
     - block_content.type.social_sharing
     - field.storage.block_content.field_social_sharing_options
     - taxonomy.vocabulary.social_sharing_options
+  module:
+    - radicati_social
+  enforced:
+    module:
+      - radicati_social
 id: block_content.social_sharing.field_social_sharing_options
 field_name: field_social_sharing_options
 entity_type: block_content
 bundle: social_sharing
-label: "Social Sharing Options"
-description: ""
+label: 'Social Sharing Options'
+description: ''
 required: false
 translatable: false
-default_value: {}
-default_value_callback: ""
+default_value: {  }
+default_value_callback: ''
 settings:
-  handler: "default:taxonomy_term"
+  handler: 'default:taxonomy_term'
   handler_settings:
     target_bundles:
       social_sharing_options: social_sharing_options
@@ -25,5 +29,5 @@ settings:
       field: name
       direction: asc
     auto_create: false
-    auto_create_bundle: ""
+    auto_create_bundle: ''
 field_type: entity_reference

@@ -2,11 +2,12 @@ langcode: en
 status: true
 dependencies:
   module:
+    - taxonomy
     - radicati_social
   enforced:
     module:
       - radicati_social
-id: social_sharing
-label: 'Social Sharing block'
-revision: 0
-description: 'A simple, configurable social sharing block'
+id: taxonomy_term.sharing_slug
+label: 'Sharing Slug'
+targetEntityType: taxonomy_term
+cache: true

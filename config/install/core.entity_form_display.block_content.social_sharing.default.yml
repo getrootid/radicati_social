@@ -15,12 +15,21 @@ bundle: social_sharing
 mode: default
 content:
   field_social_sharing_options:
-    type: entity_reference_entity_view
-    label: hidden
-    settings:
-      view_mode: sharing_slug
-      link: false
-    third_party_settings: {  }
-    weight: 0
+    type: entity_reference_autocomplete
+    weight: 26
     region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  info:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
 hidden: {  }

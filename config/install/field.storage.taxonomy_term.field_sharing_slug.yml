@@ -2,21 +2,22 @@ langcode: en
 status: true
 dependencies:
   module:
-    - block_content
     - taxonomy
     - radicati_social
   enforced:
     module:
       - radicati_social
-id: block_content.field_social_sharing_options
-field_name: field_social_sharing_options
-entity_type: block_content
-type: entity_reference
+id: taxonomy_term.field_sharing_slug
+field_name: field_sharing_slug
+entity_type: taxonomy_term
+type: string
 settings:
-  target_type: taxonomy_term
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
 module: core
 locked: false
-cardinality: -1
+cardinality: 1
 translatable: true
 indexes: {  }
 persist_with_no_fields: false

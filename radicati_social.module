@@ -21,6 +21,10 @@ function radicati_social_help($route_name, RouteMatchInterface $route_match) {
             $output .= "<h3>" . t("About") . "</h3>";
             $output .=
                 "<p>" . t("Provides a simple social sharing block.") . "</p>";
+            $output .= "</br>";
+            $output .= "<h3>" . t("How-to") . "</h3>";
+             $output .=
+                "<p>" . t("Create a new custom block of the Social Sharing type, and place it where ever you need a social sharing block.") . "</p>";
             return $output;
 
         default:
