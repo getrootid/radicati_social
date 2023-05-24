@@ -2,7 +2,15 @@
 
 <section class='social-share' aria-label="{{ 'Social Sharing'|trans }}">
   {% for item in items %}
-    {% set slug = item.content['#taxonomy_term'].field_slug.value %}
+    {% set slug = item.content['#taxonomy_term'].field_sharing_slug.value %}
+    {% if slug == 'mastodon' %}
+      {% include '@radicati_social/share-link.twig' with {
+        classes: 'social-link social-popup social-mastodon',
+        url: 'http://mastodon.social?url=' ~ (url('<current>')|render|url_encode),
+        slug: 'fab fa-mastodon',
+        label: 'Share on Mastadon -- New Window'
+      } only %}
+    {% endif %}
     {% if slug == 'twitter' %}
       {% include '@radicati_social/share-link.twig' with {
         classes: 'social-link social-popup',
