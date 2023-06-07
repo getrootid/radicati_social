@@ -36,7 +36,7 @@ function radicati_social_help($route_name, RouteMatchInterface $route_match) {
  */
 function radicati_social_theme_suggestions_field_alter(
     &$suggestions,
-    $variables,
+    $variables
 ) {
     $name = $variables["element"]["#field_name"];
     if ($name == "field_social_sharing_options") {
@@ -66,25 +66,25 @@ function radicati_social_theme_suggestions_field_alter(
  * Implements hook_theme().
  */
 function radicati_social_theme() {
-    // The following lets Drupal know where to find the
-    // templates for the suggestions above.
-    $a = [];
-
-    $filename = "field--radicati--field-social-sharing-options";
-    $theme_name = "field__field-social-sharing-options";
-
-    $filename = str_replace("_", "-", $filename);
-    $theme_name = str_replace("-", "_", $theme_name);
-
-    $a[$theme_name] = [
-        "template" => $filename,
-        "base hook" => "field",
-        "path" =>
-            \Drupal::service("extension.list.module")->getPath(
-                "radicati_social",
-            ) . "/templates",
+    return [
+      'radicati_social__share_button' => [
+        'variables' => [
+          'url' => NULL,
+          'use_button' => NULL,
+          'machine_name' => NULL,
+          'label' => NULL,
+          'service_name' => NULL,
+          'icon_class' => NULL,
+          'attributes' => NULL,
+        ],
+      ],
+      'radicati_social__share_buttons' => [
+        'variables' => [
+          'label' => NULL,
+          'buttons' => NULL,
+        ],
+      ],
     ];
-    return $a;
 }
 
 
@@ -95,11 +95,11 @@ function radicati_social_theme() {
  */
 function radicati_social_entity_extra_field_info() {
   $extra = [];
-  $description = t('Social Sharing Widget');
+  $description = t('Social Sharing Widget, configured at /admin/config/services/radicati_social');
 
   foreach(NodeType::loadMultiple() as $bundle) {
     $extra['node'][$bundle->id()]['display']['social_widget'] = [
-      'label' => t('Social Sharing'),
+      'label' => t('Radicati Social Sharing'),
       'description' => $description,
       'weight' => 0,
       'visible' => FALSE,
@@ -112,8 +112,73 @@ function radicati_social_entity_extra_field_info() {
 function radicati_social_node_view(array &$build, EntityInterface $entity,
                                    EntityViewDisplayInterface $display, $view_mode) {
   if($display->getComponent('social_widget')) {
+    // Load the social services config.
+    $config = \Drupal::config('radicati_social.settings');
+    $services = _radicati_social_get_services();
+
+    $buttons = [];
+    foreach($services as $key => $service) {
+      $url = $service['url'];
+
+      $path = \Drupal\Core\Url::fromRoute('<current>', [], ['absolute'=>TRUE])->toString();
+
+      // Replace the {URL} placeholder in $url with the $path
+      $url = str_replace('{URL}', $path, $url);
+
+      $useButton = in_array($key, ['copy']);
+
+      $buttons[] = [
+        '#theme' => 'radicati_social__share_button',
+        '#machine_name' => $key,
+        '#use_button' => $useButton,
+        '#url' => $url,
+        '#label' => $service['label'],
+        '#service_name' => $service['service_name'],
+        '#icon_class' => $service['class'],
+        '#attributes' => [
+          'class' => [
+            'rshare-button',
+            'rshare-button--' . $key,
+          ],
+        ],
+      ];
+    }
+
+    // Now render the sharing widget with the buttons using the
+    // radicati_social__share_buttons defined above.
     $build['social_widget'] = [
-      '#theme' => 'radicati_social',
+      '#theme' => 'radicati_social__share_buttons',
+      '#label' => $config->get('label'),
+      '#buttons' => $buttons,
+      '#attached' => [
+        'library' => [
+          'radicati_social/popup',
+        ],
+      ],
     ];
   }
+}
+
+/**
+ * Loads the social services config and merges in the available_services to get the
+ * share url and the service label. Returns an array that can be used to render
+ * the social sharing buttons.
+ */
+function _radicati_social_get_services() {
+  $config = \Drupal::config('radicati_social.settings');
+  $services = $config->get('services');
+  $available_services = $config->get('available_services');
+
+  $output = [];
+
+  foreach($services as $key => $service) {
+    if($service['enabled'] == TRUE) {
+      $output[$key] = $service;
+      $output[$key]['url'] = $available_services[$key]['path'];
+      $output[$key]['label'] = $available_services[$key]['label'];
+    }
+
+  }
+
+  return $output;
 }

@@ -1,0 +1,10 @@
+{% if use_button %}
+    <button {{ attributes }}>
+        <i class="{{ icon_class }}" title="{{ "Share on @label"|t({"@label": label}) }}"></i>
+        <span class="status"></span>
+    </button>
+{% else %}
+    <a href="{{ url }}" target="_blank" {{ attributes }}>
+        <i class="{{ icon_class }}" title="{{ "Share on @label"|t({"@label": label}) }}"></i>
+    </a>
+{% endif %}

@@ -1,0 +1,38 @@
+share_label: 'Share'
+available_services:
+  twitter:
+    label: 'Twitter'
+    class: 'fab fa-twitter'
+    path: 'http://twitter.com/intent/tweet?url={URL}'
+    weight: -10
+    enabled: 1
+  linkedin:
+    label: 'LinkedIn'
+    enabled: 1
+    class: 'fab fa-linkedin-in'
+    path: 'https://www.linkedin.com/sharing/share-offsite/?url={URL}'
+    weight: -9
+  facebook:
+    label: 'Facebook'
+    enabled: 1
+    class: 'fab fa-facebook'
+    path: 'https://www.facebook.com/sharer/sharer.php?u={URL}'
+    weight: -8
+  mastodon:
+    label: 'Mastodon'
+    enabled: 1
+    class: 'fab fa-mastodon'
+    path: "http://mastodon.social?url={URL}"
+    weight: -7
+  copy:
+    label: 'Copy'
+    enabled: 1
+    class: 'fas fa-copy'
+    path: '#'
+    weight: -6
+  print:
+    label: 'Print'
+    enabled: 1
+    class: 'fas fa-print'
+    path: 'javascript:window.print()'
+    weight: -5

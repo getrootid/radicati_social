@@ -1,0 +1,6 @@
+radicati_social.admin:
+  title: 'Radicati Social'
+  description: 'Radicati Social'
+  route_name: radicati_social.admin
+  parent: system.admin_config_services
+  weight: 100
