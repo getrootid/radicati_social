@@ -112,51 +112,56 @@ function radicati_social_entity_extra_field_info() {
 function radicati_social_node_view(array &$build, EntityInterface $entity,
                                    EntityViewDisplayInterface $display, $view_mode) {
   if($display->getComponent('social_widget')) {
-    // Load the social services config.
-    $config = \Drupal::config('radicati_social.settings');
-    $services = _radicati_social_get_services();
+    $build['social_widget'] = _prepare_share_buttons();
+  }
+}
 
-    $buttons = [];
-    foreach($services as $key => $service) {
-      $url = $service['url'];
+function _prepare_share_buttons() {
+  $config = \Drupal::config('radicati_social.settings');
+  $services = _radicati_social_get_services();
 
-      $path = \Drupal\Core\Url::fromRoute('<current>', [], ['absolute'=>TRUE])->toString();
+  $buttons = [];
+  foreach($services as $key => $service) {
+    $url = $service['url'];
 
-      // Replace the {URL} placeholder in $url with the $path
-      $url = str_replace('{URL}', $path, $url);
+    $path = \Drupal\Core\Url::fromRoute('<current>', [], ['absolute'=>TRUE])->toString();
 
-      $useButton = in_array($key, ['copy']);
+    // Replace the {URL} placeholder in $url with the $path
+    $url = str_replace('{URL}', $path, $url);
 
-      $buttons[] = [
-        '#theme' => 'radicati_social__share_button',
-        '#machine_name' => $key,
-        '#use_button' => $useButton,
-        '#url' => $url,
-        '#label' => $service['label'],
-        '#service_name' => $service['service_name'],
-        '#icon_class' => $service['class'],
-        '#attributes' => [
-          'class' => [
-            'rshare-button',
-            'rshare-button--' . $key,
-          ],
-        ],
-      ];
-    }
+    $useButton = in_array($key, ['copy']);
 
-    // Now render the sharing widget with the buttons using the
-    // radicati_social__share_buttons defined above.
-    $build['social_widget'] = [
-      '#theme' => 'radicati_social__share_buttons',
-      '#label' => $config->get('label'),
-      '#buttons' => $buttons,
-      '#attached' => [
-        'library' => [
-          'radicati_social/popup',
+    $buttons[] = [
+      '#theme' => 'radicati_social__share_button',
+      '#machine_name' => $key,
+      '#use_button' => $useButton,
+      '#url' => $url,
+      '#label' => $service['label'],
+      '#service_name' => $service['service_name'],
+      '#icon_class' => $service['class'],
+      '#attributes' => [
+        'class' => [
+          'rshare-button',
+          'rshare-button--' . $key,
         ],
       ],
     ];
   }
+
+  // Now render the sharing widget with the buttons using the
+  // radicati_social__share_buttons defined above.
+  $build = [
+    '#theme' => 'radicati_social__share_buttons',
+    '#label' => $config->get('label'),
+    '#buttons' => $buttons,
+    '#attached' => [
+      'library' => [
+        'radicati_social/popup',
+      ],
+    ],
+  ];
+
+  return $build;
 }
 
 /**
